@@ -2,7 +2,6 @@ package com.example.demo.functions;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Clients;
-import com.example.demo.repository.ClientsRepository;
 import com.example.demo.repository.IClientsFunctions;
 
 
@@ -26,9 +24,6 @@ public class ClientsFunctionsImpl implements IClientsFunctions{
 	private JdbcTemplate jdbcTemplate;
 	
 
-	@Autowired
-	private ClientsRepository clientsrepository;
-	
 	    @Override	
 		public List<Clients> AfficherClient(Long phone) {
 
