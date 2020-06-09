@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entity.Admins;
 import com.example.demo.entity.Clients;
 import com.example.demo.functions.AdminsFunctionsImpl;
 import com.example.demo.functions.ClientsFunctionsImpl;
+import com.example.demo.repository.AdminsRepository;
 import com.example.demo.repository.ClientsRepository;
 
 
@@ -34,6 +36,9 @@ public class AdminsController {
 	
 	@Autowired
 	private AdminsFunctionsImpl adminsfunctionsimpl;
+	
+	@Autowired
+	private AdminsRepository adminsRepository;
 	
 	
 
@@ -80,6 +85,28 @@ public class AdminsController {
 	public Clients getSpecificClient(@PathVariable Long phone) {
 		return clientsFunctionsImpl.AfficherClient(phone).get(0);
 	}
+	
+	
+	@PostMapping(path="admin/create")
+    public void createAdmin(@RequestBody Admins admin) {
+        
+		adminsfunctionsimpl.InsertAdmin(admin);
+				
+    }
+	
+	
+	@PutMapping(path="admin/update/{email}")
+	public ResponseEntity<Admins> updateClient(@PathVariable String email,@RequestBody Admins admin){
+		
+	Admins updatedAdmin=adminsRepository.save(admin);
+	
+	return new ResponseEntity<Admins>(admin,HttpStatus.OK); 
+		
+		
+	}
+	
+	
+	
 	
 	
 
