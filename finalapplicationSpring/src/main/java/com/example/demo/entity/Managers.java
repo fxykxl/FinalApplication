@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="Managers")
-public class Managers {
+public class Managers implements Serializable{
 	
 	@Id
 	@Column(name="email")
@@ -45,6 +46,16 @@ public class Managers {
 	
 	public Managers() {
 		
+	}
+	
+	public Managers (String email) {
+		this.email=email;
+    }
+	public Managers(String email, String password , Long phone) {
+		
+		this.email = email;
+		this.passwordManager =password;
+		this.phone=phone;
 	}
 
 	public Managers(String email, String firstName, String lastName, String proname, Date birthDate, String gender,

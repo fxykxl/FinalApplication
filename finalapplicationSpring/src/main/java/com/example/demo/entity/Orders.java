@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
-public class Orders {
+import java.io.Serializable;
+
+public class Orders implements Serializable{
 
 }

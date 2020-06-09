@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="DeliveryMan")
-public class DeliveryMen {
+public class DeliveryMen implements Serializable{
 	
 	@Id
 	@Column(name="email")
@@ -27,6 +28,9 @@ public class DeliveryMen {
 	@Column(name="gender")
 	private String gender;
 	
+	@Column(name="phone")
+	private Long phone;
+	
 	@Column(name="addressdeliveryman")
 	private String addressDeliveryMan;
 	
@@ -40,8 +44,23 @@ public class DeliveryMen {
 	public DeliveryMen() {
 		
 	}
+	
+    public DeliveryMen(String email) {
+		
+		this.email= email;
+    }
+    
+    
+	public DeliveryMen( String email ,String password, Long phone) {
+		this.passwordDeliverMan =password;
+		this.phone = phone;
+		this.email=email;
+	}
 
-	public DeliveryMen(String email, String firstName, String lastName, Date birthDate, String gender,
+	
+
+	
+	public DeliveryMen(String email, String firstName, String lastName, Date birthDate, String gender, Long phone,
 			String addressDeliveryMan, Date inscriptionDate, String passwordDeliverMan) {
 		super();
 		this.email = email;
@@ -49,6 +68,7 @@ public class DeliveryMen {
 		this.lastName = lastName;
 		this.birthDate = birthDate;
 		this.gender = gender;
+		this.phone = phone;
 		this.addressDeliveryMan = addressDeliveryMan;
 		this.inscriptionDate = inscriptionDate;
 		this.passwordDeliverMan = passwordDeliverMan;
@@ -101,6 +121,15 @@ public class DeliveryMen {
 	public void setAddressDeliveryMan(String addressDeliveryMan) {
 		this.addressDeliveryMan = addressDeliveryMan;
 	}
+	
+	public Long getPhone() {
+		return phone;
+	}
+
+	public void setPhone(Long phone) {
+		this.phone = phone;
+	}
+
 
 	public Date getInscriptionDate() {
 		return inscriptionDate;

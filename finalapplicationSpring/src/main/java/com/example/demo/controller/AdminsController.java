@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Admins;
 import com.example.demo.entity.Clients;
+import com.example.demo.entity.DeliveryMen;
+import com.example.demo.entity.Managers;
 import com.example.demo.functions.AdminsFunctionsImpl;
 import com.example.demo.functions.ClientsFunctionsImpl;
+import com.example.demo.functions.DeliveryManFunctionsImpl;
+import com.example.demo.functions.ManagersFunctionsImpl;
 import com.example.demo.repository.AdminsRepository;
 import com.example.demo.repository.ClientsRepository;
+import com.example.demo.repository.DeliveryManRepository;
+import com.example.demo.repository.ManagersRepository;
 
 
 
@@ -39,6 +45,18 @@ public class AdminsController {
 	
 	@Autowired
 	private AdminsRepository adminsRepository;
+	
+	@Autowired
+	private DeliveryManRepository deliverymenRepository;
+	
+	@Autowired
+	private DeliveryManFunctionsImpl deliveryMenFuncImpl;
+	
+	@Autowired 
+	private ManagersRepository managersRepository;
+	
+	@Autowired
+	private ManagersFunctionsImpl managersFuncImpl;
 	
 	
 
@@ -87,6 +105,9 @@ public class AdminsController {
 	}
 	
 	
+	//Admins Functions
+	
+	
 	@PostMapping(path="admin/create")
     public void createAdmin(@RequestBody Admins admin) {
         
@@ -96,7 +117,7 @@ public class AdminsController {
 	
 	
 	@PutMapping(path="admin/update/{email}")
-	public ResponseEntity<Admins> updateClient(@PathVariable String email,@RequestBody Admins admin){
+	public ResponseEntity<Admins> updateAdmin(@PathVariable String email,@RequestBody Admins admin){
 		
 	Admins updatedAdmin=adminsRepository.save(admin);
 	
@@ -104,6 +125,116 @@ public class AdminsController {
 		
 		
 	}
+	
+	
+	//DeliveryMen Functions
+	
+	
+	
+	@PostMapping(path="admin/deliverymenlist/create")
+    public ResponseEntity<DeliveryMen> createDeliveryMan(@RequestBody DeliveryMen deliveryMan) {
+        
+		DeliveryMen deliveryman1 = deliverymenRepository.save(deliveryMan);
+		
+		return new ResponseEntity<DeliveryMen>(deliveryman1,HttpStatus.CREATED);
+    }
+	
+	
+	@GetMapping(path="admin/deliverymenlist")
+	public List<DeliveryMen> getAllDeliveryMen(){
+		
+		List<DeliveryMen> deliveryMenList = new ArrayList<DeliveryMen>();
+		
+		deliverymenRepository.findAll().forEach(deliveryMenList :: add);
+		
+		return deliveryMenList;
+		
+	}
+	
+	
+	@PutMapping(path="admin/deliverymenlist/update/{email}")
+	public ResponseEntity<DeliveryMen> updateClient(@PathVariable String email,@RequestBody DeliveryMen deliveryMan){
+		DeliveryMen updateClient=deliverymenRepository.save(deliveryMan);
+		return new ResponseEntity<DeliveryMen>(deliveryMan,HttpStatus.OK); 
+		
+		
+	}
+	
+	
+	@DeleteMapping(path="admin/deliverymenlist/delete/{email}")
+	public void deleteDeleveryMan(@PathVariable String email) {
+		
+		DeliveryMen deliveryManToBeDeleted = deliveryMenFuncImpl.AfficherDeliveryMan(email).get(0);
+		
+		adminsfunctionsimpl.DeleteDeliveryMan(deliveryManToBeDeleted);
+		
+	}
+	
+	
+	@GetMapping("admin/deliverymenlist/{email}")
+	public DeliveryMen getSpecificDeliveryMan(@PathVariable String email) {
+		
+		return deliveryMenFuncImpl.AfficherDeliveryMan(email).get(0);
+		
+	}
+	
+	
+	//Manager Functions
+	
+	
+	@PostMapping(path="admin/managerslist/create")
+    public ResponseEntity<Managers> createManager(@RequestBody Managers manager) {
+        
+		Managers manager1 = managersRepository.save(manager);
+		
+		return new ResponseEntity<Managers>(manager1,HttpStatus.CREATED);
+    }
+	
+	
+	@GetMapping(path="admin/managerslist")
+	public List<Managers> getAllManagers(){
+		
+		List<Managers> managersList = new ArrayList<Managers>();
+		
+		managersRepository.findAll().forEach(managersList :: add);
+		
+		return managersList;
+		
+	}
+	
+	
+	@PutMapping(path="admin/managerslist/update/{email}")
+	public ResponseEntity<Managers> updateManager(@PathVariable String email,@RequestBody Managers manager){
+		
+		Managers updatedManager=managersRepository.save(manager);
+		
+		return new ResponseEntity<Managers>(manager,HttpStatus.OK); 
+		
+		
+	}
+	
+	
+	@DeleteMapping(path="admin/managerslist/delete/{email}")
+	public void deleteManager(@PathVariable String email) {
+		
+		Managers managerToBeDeleted = managersFuncImpl.AfficherManager(email).get(0);
+		
+		adminsfunctionsimpl.DeleteManager(managerToBeDeleted);
+		
+	}
+	
+	
+	@GetMapping("admin/managerslist/{email}")
+	public Managers getSpecificManager(@PathVariable String email) {
+		
+		return managersFuncImpl.AfficherManager(email).get(0);
+		
+	}
+	
+	
+	
+	
+	
 	
 	
 	
