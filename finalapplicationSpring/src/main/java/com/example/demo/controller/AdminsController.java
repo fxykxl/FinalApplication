@@ -1,11 +1,18 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +30,7 @@ import com.example.demo.functions.AdminsFunctionsImpl;
 import com.example.demo.functions.ClientsFunctionsImpl;
 import com.example.demo.functions.DeliveryManFunctionsImpl;
 import com.example.demo.functions.ManagersFunctionsImpl;
+import com.example.demo.payload.LoginRequest;
 import com.example.demo.repository.AdminsRepository;
 import com.example.demo.repository.ClientsRepository;
 import com.example.demo.repository.DeliveryManRepository;
@@ -57,6 +65,9 @@ public class AdminsController {
 	
 	//@Autowired
 	//private ManagersFunctionsImpl managersFuncImpl;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	
 
@@ -116,6 +127,36 @@ public class AdminsController {
     }
 	
 	
+	
+	
+	@PostMapping("/admin/signin")
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
+    if(result.hasErrors()) {
+			
+			Map<String , String> errorMap = new HashMap<>();
+			for(FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			
+			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+            
+    }
+			
+			Admins admin= adminsRepository.findByEmail(loginRequest.getEmail());			
+			if(bCryptPasswordEncoder.matches(loginRequest.getPassword() ,admin.getPasswordAdmin())) {
+				
+				return ResponseEntity.ok("Logged in Successfully");
+			
+			}
+						
+			return new ResponseEntity<>("There have been Errors" ,HttpStatus.BAD_REQUEST );
+			
+			
+			
+    }
+	
+	
+	
 	@PutMapping(path="admin/update/{email}")
 	public ResponseEntity<Admins> updateAdmin(@PathVariable String email,@RequestBody Admins admin){
 		
@@ -127,9 +168,7 @@ public class AdminsController {
 	}
 	
 	
-	//DeliveryMen Functions
-	
-	
+	//DeliveryMen Functions	
 	
 	@PostMapping(path="admin/deliverymenlist/create")
     public ResponseEntity<DeliveryMen> createDeliveryMan(@RequestBody DeliveryMen deliveryMan) {
@@ -138,6 +177,9 @@ public class AdminsController {
 		
 		return new ResponseEntity<DeliveryMen>(deliveryman1,HttpStatus.CREATED);
     }
+	
+	
+	
 	
 	
 	@GetMapping(path="admin/deliverymenlist")

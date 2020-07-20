@@ -14,44 +14,81 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
-@Table(name="Managers")
+@Table(name="Managers", uniqueConstraints = { 
+		@UniqueConstraint(columnNames = "phone"),
+		@UniqueConstraint(columnNames = "email") 
+	})
 public class Managers implements Serializable{
 	
 	@Id
 	@Column(name="email")
+	@NotBlank(message="Required Field")
+	@Email(message="Please Enter a valid email")
 	private String email;
 	
+	
+	
 	@Column(name="firstname")
+	@NotBlank(message="Required Field")
+	@Size(min=3, message="Must Be More Than 3 Characters")
 	private String firstName;
 	
 	@Column(name="lastname")
+	@NotBlank(message="Required Field")
+	@Size(min=3, message="Must Be More Than 3 Characters")
 	private String lastName;
 	
 	@Column(name="proname")
+	@NotBlank(message="Required Field")
+	@Size(min=3, message="Must Be More Than 3 Characters")
 	private String proname;
 	
 	@Column(name="birthdate")
+	@JsonFormat(pattern="mm-dd-yyyy")
 	private Date birthDate;
+	
+	
 	
 	@Column(name="gender")
 	private String gender;
 	
+	
+	
 	@Column(name="addressmanager")
+	@NotBlank(message="Required Field")
+	@Size(min=10 ,message="Must be more than 10 characters")
 	private String addressManager;
 	
+	
+	@Min(10) @NotNull(message="Required Field")
 	@Column(name="phone")
 	private Long phone;
 	
+	
+	
 	@Column(name="registrationdate")
+	@JsonFormat(pattern="mm-dd-yyyy")
 	private Date inscriptionDate;
 	
+	
+	
 	@Column(name="passwordmanager")
+	@NotBlank(message="Required Field")
+	@Size(min=8 , message="Must be More Than 8 characters")
 	private String passwordManager;
 	
 
@@ -65,6 +102,12 @@ public class Managers implements Serializable{
 	
 	public Managers() {
 		
+	}
+	
+	
+	@PrePersist
+	public void onCreate() {
+		this.inscriptionDate=new Date();
 	}
 	
 	public Managers (String email) {

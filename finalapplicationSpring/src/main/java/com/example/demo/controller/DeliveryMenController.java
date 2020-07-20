@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,44 +14,34 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Clients;
-
-import com.example.demo.functions.AdminsFunctionsImpl;
-import com.example.demo.functions.ClientsFunctionsImpl;
+import com.example.demo.entity.DeliveryMen;
+import com.example.demo.functions.DeliveryManFunctionsImpl;
 import com.example.demo.payload.LoginRequest;
-import com.example.demo.repository.ClientsRepository;
-
-
+import com.example.demo.repository.DeliveryManRepository;
 
 @CrossOrigin
 @RestController
-public class ClientsController {
-	
-	
-	@Autowired
-	private ClientsFunctionsImpl clientsFunctionsImpl;
-	
-
-	@Autowired
-	private ClientsRepository clientsRepository;
+public class DeliveryMenController {
 	
 	@Autowired
-	private AdminsFunctionsImpl adminsfunctionsimpl;
+	private DeliveryManRepository deliverymanRepo;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-
-
+	@Autowired
+	private DeliveryManFunctionsImpl deliveryMenFuncImpl;
 	
-	@PostMapping("/client/signin")
+	
+	@PostMapping("/deliveryman/signin")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
     if(result.hasErrors()) {
 			
@@ -64,8 +54,8 @@ public class ClientsController {
             
     }
 			
-			Clients client= clientsRepository.findByEmail(loginRequest.getEmail());			
-			if(bCryptPasswordEncoder.matches(loginRequest.getPassword() ,client.getPasswordClient())) {
+			DeliveryMen deliveryMan= deliverymanRepo.findByEmail(loginRequest.getEmail());			
+			if(bCryptPasswordEncoder.matches(loginRequest.getPassword() ,deliveryMan.getPasswordDeliverMan())) {
 				
 				return ResponseEntity.ok("Logged in Successfully");
 			
@@ -76,14 +66,11 @@ public class ClientsController {
 			
 			
     }
-    
-		
-			
-
-	@PostMapping("client/clientslist/create")
-    public ResponseEntity<?> createClient(@Valid @RequestBody Clients client , BindingResult result) {
-		
-		if(result.hasErrors()) {
+	
+	@PostMapping(path="deliveryman/deliverymenlist/create")
+    public ResponseEntity<?> createDeliveryMan(@Valid @RequestBody DeliveryMen deliveryMan,BindingResult result) {				
+        
+     if(result.hasErrors()) {
 			
 			Map<String , String> errorMap = new HashMap<>();
 			for(FieldError error : result.getFieldErrors()) {
@@ -91,23 +78,20 @@ public class ClientsController {
 			}
 			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
 		}
+			
 		
-		if(clientsRepository.existsByPhone(client.getPhone())) {
-			return new ResponseEntity<String>("Phone Already Exists",HttpStatus.BAD_REQUEST);
-		}
-		
-		if(clientsRepository.existsByEmail(client.getEmail())) {
+		if(deliverymanRepo.existsByEmail(deliveryMan.getEmail())) {
 			return new ResponseEntity<>("Email Already Exists",HttpStatus.BAD_REQUEST);
 		}
 				
 		
-			client.setPasswordClient(bCryptPasswordEncoder.encode(client.getPasswordClient()));	
+		deliveryMan.setPasswordDeliverMan(bCryptPasswordEncoder.encode(deliveryMan.getPasswordDeliverMan()));	
 			
-			client.setPhone(client.getPhone());
+		deliveryMan.setPhone(deliveryMan.getPhone());
 			
-			Clients client1 = clientsRepository.save(client);					
+		DeliveryMen deliveryMan2 = deliverymanRepo.save(deliveryMan);					
 			
-			return new ResponseEntity<Clients>(client1,HttpStatus.CREATED);
+		return new ResponseEntity<DeliveryMen>(deliveryMan2,HttpStatus.CREATED);
 			
 
 		
@@ -115,31 +99,24 @@ public class ClientsController {
 	
 	
 	
-	@GetMapping("client/clientslist/{phone}")
-	public Clients getSpecificClient(@PathVariable Long phone) {
-		return clientsFunctionsImpl.AfficherClient(phone).get(0);
-	}
-	
-	
-	
-	
-	
-	@DeleteMapping(path="client/clientslist/delete/{phone}")
-	public void deleteClient(@PathVariable Long phone) {
+	@GetMapping("deliveryman/deliverymenlist/{email}")
+	public DeliveryMen getSpecificDeliveryMan(@PathVariable String email) {
 		
-		Clients clientToBeDeleted = clientsFunctionsImpl.AfficherClient(phone).get(0);
-		adminsfunctionsimpl.DeleteClient(clientToBeDeleted);
+		return deliveryMenFuncImpl.AfficherDeliveryMan(email).get(0);
 		
 	}
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	    
+	@PutMapping(path="deliveryman/deliverymenlist/update/{email}")
+	public ResponseEntity<DeliveryMen> updateClient(@PathVariable String email,@RequestBody DeliveryMen deliveryMan){
+		
+		DeliveryMen updatedDeliveryMan=deliverymanRepo.save(deliveryMan);
+		
+		return new ResponseEntity<DeliveryMen>(deliveryMan,HttpStatus.OK); 
+		
+		
+	}
+
 }

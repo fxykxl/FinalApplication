@@ -53,8 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				"/**/*.js"
 				).permitAll()
 		.antMatchers("/client/clientslist/**").permitAll()
-		.antMatchers("/admin/clientslist/**").permitAll()
+		.antMatchers("/admin/**").permitAll()
 		.antMatchers("/client/**").permitAll()
+		.antMatchers("/manager/**").permitAll()
+		.antMatchers("/deliveryman/**").permitAll()
 		.anyRequest().authenticated();
 	}
 	

@@ -9,5 +9,9 @@ import com.example.demo.entity.DeliveryMen;
 
 @Repository
 public interface DeliveryManRepository extends JpaRepository<DeliveryMen, String>{
+	
+	boolean existsByEmail(String email);
+	
+	DeliveryMen findByEmail(String email);
 
 }
