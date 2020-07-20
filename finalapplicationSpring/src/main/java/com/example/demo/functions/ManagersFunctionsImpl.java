@@ -3,6 +3,7 @@ package com.example.demo.functions;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Managers;
+import com.example.demo.entity.Organizations;
 import com.example.demo.repository.IManagersFunctions;
 import com.example.demo.repository.ManagersRepository;
+import com.example.demo.repository.OrganizationsRepository;
 
 
 
@@ -28,6 +31,12 @@ public class ManagersFunctionsImpl implements IManagersFunctions{
 	
 	@Autowired
 	private ManagersRepository managerrepository;
+	
+	@Autowired
+	private OrganizationsRepository organizationsRepo;
+	
+	@Autowired
+	private OrganizationsFunctionsImp organizationsFuncImp;
 
 	@Override
 	public List<Managers> AfficherManager(String email) {
@@ -50,19 +59,7 @@ public class ManagersFunctionsImpl implements IManagersFunctions{
 		
 	}
 	
-	@Override
-	public void InsertManager (Managers m) {
-		
-		if(AfficherManager(m.getEmail().toString()).size() != 0)
-		{
-			System.out.println("Email already exist");
-		}
-		
-		else {
-			managerrepository.save(m);
-		} 
-		
-	}
+	
 	
 	@Override
 	public String LoginManager(String email, String password) {
@@ -157,6 +154,18 @@ public class ManagersFunctionsImpl implements IManagersFunctions{
 		
 	}
 
+	
+	@Override
+	public void createAManager(Managers manager) {
+		
+		/*Organizations organization = new Organizations();		
+		//manager.setOrganizations(organization);		
+		organization.setManagers(manager);		
+		organization.setIdOrganization("kkk");	
+		managerrepository.save(manager);
+		
+		*/
+	}
 
 	
 	

@@ -2,11 +2,21 @@ package com.example.demo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -32,7 +42,7 @@ public class Managers implements Serializable{
 	@Column(name="gender")
 	private String gender;
 	
-	@Column(name="addressamanager")
+	@Column(name="addressmanager")
 	private String addressManager;
 	
 	@Column(name="phone")
@@ -41,8 +51,17 @@ public class Managers implements Serializable{
 	@Column(name="registrationdate")
 	private Date inscriptionDate;
 	
-	@Column(name="paswordManager")
+	@Column(name="passwordmanager")
 	private String passwordManager;
+	
+
+	@OneToMany(targetEntity=Organizations.class ,cascade=CascadeType.ALL)
+    @JoinColumn(name = "idmanager" , referencedColumnName="email")
+	private List<Organizations> organizations;
+	
+	
+	
+	
 	
 	public Managers() {
 		
@@ -58,8 +77,15 @@ public class Managers implements Serializable{
 		this.phone=phone;
 	}
 
+
+
+
+
+	
+
 	public Managers(String email, String firstName, String lastName, String proname, Date birthDate, String gender,
-			String addressManager, Long phone, Date inscriptionDate, String passwordManager) {
+			String addressManager, Long phone, Date inscriptionDate, String passwordManager,
+			List<Organizations> organizations) {
 		super();
 		this.email = email;
 		this.firstName = firstName;
@@ -71,6 +97,15 @@ public class Managers implements Serializable{
 		this.phone = phone;
 		this.inscriptionDate = inscriptionDate;
 		this.passwordManager = passwordManager;
+		this.organizations = organizations;
+	}
+
+	public List<Organizations> getOrganizations() {
+		return organizations;
+	}
+
+	public void setOrganizations(List<Organizations> organizations) {
+		this.organizations = organizations;
 	}
 
 	public String getEmail() {

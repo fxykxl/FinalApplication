@@ -16,7 +16,7 @@ public class MyConfig {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
+                registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:3000");
             }
         };
     }

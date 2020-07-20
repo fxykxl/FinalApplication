@@ -55,8 +55,8 @@ public class AdminsController {
 	@Autowired 
 	private ManagersRepository managersRepository;
 	
-	@Autowired
-	private ManagersFunctionsImpl managersFuncImpl;
+	//@Autowired
+	//private ManagersFunctionsImpl managersFuncImpl;
 	
 	
 
@@ -212,7 +212,7 @@ public class AdminsController {
 		
 		
 	}
-	
+	/*
 	
 	@DeleteMapping(path="admin/managerslist/delete/{email}")
 	public void deleteManager(@PathVariable String email) {
@@ -231,7 +231,7 @@ public class AdminsController {
 		
 	}
 	
-	
+	*/
 	
 	
 	

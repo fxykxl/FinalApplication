@@ -15,6 +15,8 @@ public interface IClientsFunctions {
  	
 	String LoginClient(String password, Long phone);
 	
+
+	
 	void UpdatePassword(Long phone, String Oldpassword, String Newpassword);
 	
 	//void Update(Long phone, String NewfirstName, String NewLastName, String NewLocation_Clients,

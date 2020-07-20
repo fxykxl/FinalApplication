@@ -23,7 +23,8 @@ public interface IManagersFunctions {
  	
 	void UpdateEmail(String email, String Oldpassword, String Newemail);
 
-	void InsertManager(Managers m);
+	
+	void createAManager(Managers manager);
 	
 }
 

@@ -1,10 +1,19 @@
 package com.example.demo.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
@@ -16,7 +25,7 @@ public class Organizations implements Serializable{
 	@Column(name="idorg")
 	private String idOrganization;
 	
-	@Column(name="idmanager")
+	@Column(name="idmanager" )
 	private String idManager;
 	
 	@Column(name="label")
@@ -28,9 +37,14 @@ public class Organizations implements Serializable{
 	@Column(name="description")
 	private String description;
 	
+
+
+	
 	public Organizations() {
 		
 	}
+
+	
 
 	public Organizations(String idOrganization, String idManager, String label, String addressOrganization,
 			String description) {
@@ -40,7 +54,13 @@ public class Organizations implements Serializable{
 		this.label = label;
 		this.addressOrganization = addressOrganization;
 		this.description = description;
+		
 	}
+
+
+
+
+
 
 	public String getIdOrganization() {
 		return idOrganization;

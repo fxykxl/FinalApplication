@@ -1,78 +1,102 @@
 package com.example.demo.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
-@Table(name="Clients")
-public class Clients implements Serializable{
+@Table(name="Clients", uniqueConstraints = { 
+		@UniqueConstraint(columnNames = "phone"),
+		@UniqueConstraint(columnNames = "email") 
+	})
+public class Clients implements UserDetails{
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@Column(name="phone")
+	@Min(10) @NotNull(message="Required Field")
 	private Long phone;
 	
+	
 	@Column(name="firstname")
+	@NotBlank(message="Required Field")
+	@Size(min=3, message="Must Be More Than 3 Characters")
 	private String firstName;
 	
+	@Size(min=3, message="Must Be More Than 3 Characters")
+	@NotBlank(message="Required Field")
 	@Column(name="lastname")
 	private String lastName;
 	
+	
+
+	@JsonFormat(pattern="mm-dd-yyyy")
 	@Column(name="birthdate")
 	private Date birthDate;
+	
+	
 	
 	@Column(name="gender")
 	private String gender;
 	
+	@NotBlank(message="Required Field")
+	@Email(message="Please Enter a valid email")
 	@Column(name="email")
 	private String email;
 	
+	@NotBlank(message="Required Field")
+	@Size(min=10 ,message="Must be more than 10 characters")
 	@Column(name="addressclient")
 	private String addressClient;
 	
-	@Column(name="inscriptiondate")
+	
+	@JsonFormat(pattern="mm-dd-yyyy")
+	@Column(name="inscriptiondate" , updatable=false)
 	private Date inscriptionDate;
 	
+	@NotBlank(message="Required Field")
+	@Size(min=8 , message="Must be More Than 8 characters")
 	@Column(name="passwordclient")
 	private String passwordClient;
+	
+	@Transient
+	private String confirmPassword;
+	
+	
+	
+	
+	@PrePersist
+	public void onCreate() {
+		this.inscriptionDate = new Date();
+	}
+	
 	
 	public Clients() {
 		
 	}
 	
-	public Clients(Long phone) {
-		 
-		this.phone= phone;
-    }
-	public Clients(Long phone, String password) {
-		
-		this.phone = phone;
-		this.passwordClient =password;
-	}
-	
-	
-	
-	public Clients(Long phone, String firstName, String lastName, Date birthDate, String gender, String email,
-			String addressClient, Date inscriptionDate, String passwordClient) {
-		super();
-		this.phone = phone;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.birthDate = birthDate;
-		this.gender = gender;
-		this.email = email;
-		this.addressClient = addressClient;
-		this.inscriptionDate = inscriptionDate;
-		this.passwordClient = passwordClient;
-	}
-
-
-
 
 
 
@@ -147,6 +171,73 @@ public class Clients implements Serializable{
 	public void setPasswordClient(String passwordClient) {
 		this.passwordClient = passwordClient;
 	}
+
+
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	@JsonIgnore
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 	
 	
