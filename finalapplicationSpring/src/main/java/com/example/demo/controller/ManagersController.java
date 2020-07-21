@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -26,6 +28,7 @@ import com.example.demo.functions.ManagersFunctionsImpl;
 import com.example.demo.payload.LoginRequest;
 import com.example.demo.repository.ManagersRepository;
 import com.example.demo.repository.OrganizationsRepository;
+
 
 
 @CrossOrigin
@@ -61,13 +64,14 @@ public class ManagersController {
 		if(managersRepo.existsByEmail(manager.getEmail())) {
 				return new ResponseEntity<>("Email Already Exists",HttpStatus.BAD_REQUEST);
 		}
-		
-		manager.setPasswordManager(bCryptPasswordEncoder.encode(manager.getPasswordManager()));		
-		manager.setEmail(manager.getEmail());
+							
+		manager.setPasswordManager(bCryptPasswordEncoder.encode(manager.getPasswordManager()));			
 		managersRepo.save(manager);
 		
 		return new ResponseEntity<Managers>(manager,HttpStatus.CREATED);
-    }
+		
+        }
+	
 	
 	
 	@PostMapping("/manager/signin")

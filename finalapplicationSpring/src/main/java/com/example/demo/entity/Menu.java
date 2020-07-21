@@ -13,7 +13,7 @@ public class Menu implements Serializable{
 	
 	@Id
 	@Column(name="idmenu")
-	private String idMenu;
+	private Long idMenu;
 	
 	
 	@Column(name="idorganization")
@@ -30,7 +30,7 @@ public class Menu implements Serializable{
 	
 
 
-	public Menu(String idMenu, String idOrganization, String description) {
+	public Menu(Long idMenu, String idOrganization, String description) {
 		super();
 		this.idMenu = idMenu;
 		this.idOrganization = idOrganization;
@@ -41,12 +41,12 @@ public class Menu implements Serializable{
 
 
 
-	public String getIdMenu() {
+	public Long getIdMenu() {
 		return idMenu;
 	}
 
 
-	public void setIdMenu(String idMenu) {
+	public void setIdMenu(Long idMenu) {
 		this.idMenu = idMenu;
 	}
 

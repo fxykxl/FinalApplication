@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="Managers", uniqueConstraints = { 
-		@UniqueConstraint(columnNames = "phone"),
 		@UniqueConstraint(columnNames = "email") 
 	})
 public class Managers implements Serializable{
@@ -92,7 +91,7 @@ public class Managers implements Serializable{
 	private String passwordManager;
 	
 
-	@OneToMany(targetEntity=Organizations.class ,cascade=CascadeType.ALL)
+	@OneToMany(targetEntity=Organizations.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
     @JoinColumn(name = "idmanager" , referencedColumnName="email")
 	private List<Organizations> organizations;
 	
@@ -110,38 +109,8 @@ public class Managers implements Serializable{
 		this.inscriptionDate=new Date();
 	}
 	
-	public Managers (String email) {
-		this.email=email;
-    }
-	public Managers(String email, String password , Long phone) {
-		
-		this.email = email;
-		this.passwordManager =password;
-		this.phone=phone;
-	}
 
 
-
-
-
-	
-
-	public Managers(String email, String firstName, String lastName, String proname, Date birthDate, String gender,
-			String addressManager, Long phone, Date inscriptionDate, String passwordManager,
-			List<Organizations> organizations) {
-		super();
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.proname = proname;
-		this.birthDate = birthDate;
-		this.gender = gender;
-		this.addressManager = addressManager;
-		this.phone = phone;
-		this.inscriptionDate = inscriptionDate;
-		this.passwordManager = passwordManager;
-		this.organizations = organizations;
-	}
 
 	public List<Organizations> getOrganizations() {
 		return organizations;
