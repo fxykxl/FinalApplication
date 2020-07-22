@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -107,16 +108,48 @@ public class ManagersController {
 	}
 	
 	
+	
 	@PutMapping(path="manager/managerslist/update/{email}")
-	public ResponseEntity<Managers> updateManager(@PathVariable String email,@RequestBody Managers manager){
+	public ResponseEntity<?> updateManager(@PathVariable String email,@Valid @RequestBody Managers manager, BindingResult result){
 		
-		Managers updatedManager=managersRepo.save(manager);
+       if(result.hasErrors()) {
+			
+			Map<String , String> errorMap = new HashMap<>();
+			for(FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			
+			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+            
+    }
+
 		
-		return new ResponseEntity<Managers>(manager,HttpStatus.OK); 
+		Managers newManager= managersRepo.findByEmail(manager.getEmail());
+		
+		newManager.setAddressManager(manager.getAddressManager());
+		newManager.setBirthDate(manager.getBirthDate());
+		newManager.setEmail(email);
+		newManager.setFirstName(manager.getFirstName());
+		newManager.setLastName(manager.getLastName());
+		newManager.setPasswordManager(manager.getPasswordManager());
+		newManager.setPhone(manager.getPhone());
+		newManager.setProname(manager.getProname());
+		 
+		final Managers updateManager= managersRepo.save(newManager);
+		
+	
+		return new ResponseEntity<Managers>(updateManager,HttpStatus.OK); 
 		
 		
 	}
 	
+	
+	@DeleteMapping(path="manager/managerslist/delete/{email}")
+	public void deleteManager(@PathVariable String email) {	
+		Managers managerToBeDeleted = managersRepo.findByEmail(email);	
+		managersRepo.delete(managerToBeDeleted);
+		
+	}
 	
 	
 

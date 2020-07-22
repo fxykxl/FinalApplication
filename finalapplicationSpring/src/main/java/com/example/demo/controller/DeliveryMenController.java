@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Clients;
 import com.example.demo.entity.DeliveryMen;
+import com.example.demo.entity.Managers;
 import com.example.demo.functions.DeliveryManFunctionsImpl;
 import com.example.demo.payload.LoginRequest;
 import com.example.demo.repository.DeliveryManRepository;
@@ -110,13 +111,38 @@ public class DeliveryMenController {
 	
 	
 	@PutMapping(path="deliveryman/deliverymenlist/update/{email}")
-	public ResponseEntity<DeliveryMen> updateClient(@PathVariable String email,@RequestBody DeliveryMen deliveryMan){
+	public ResponseEntity<?> updateDeliveryMan(@PathVariable String email,@Valid @RequestBody DeliveryMen deliveryMan, BindingResult result){
 		
-		DeliveryMen updatedDeliveryMan=deliverymanRepo.save(deliveryMan);
+	       if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }
+
+			
+	       DeliveryMen newDeliveryMan= deliverymanRepo.findByEmail(deliveryMan.getEmail());
+			
+	       newDeliveryMan.setAddressDeliveryMan(deliveryMan.getAddressDeliveryMan());
+	       newDeliveryMan.setBirthDate(deliveryMan.getBirthDate());
+	       newDeliveryMan.setEmail(email);
+	       newDeliveryMan.setFirstName(deliveryMan.getFirstName());
+	       newDeliveryMan.setLastName(deliveryMan.getLastName());
+	       newDeliveryMan.setPasswordDeliverMan(deliveryMan.getPasswordDeliverMan());
+	       newDeliveryMan.setPhone(deliveryMan.getPhone());
+	
+			 
+			final DeliveryMen updateDeliveryMan= deliverymanRepo.save(newDeliveryMan);
+			
 		
-		return new ResponseEntity<DeliveryMen>(deliveryMan,HttpStatus.OK); 
-		
-		
+			return new ResponseEntity<DeliveryMen>(updateDeliveryMan,HttpStatus.OK); 
+			
+			
+		}
 	}
 
-}
+

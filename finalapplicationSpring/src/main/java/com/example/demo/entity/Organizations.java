@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 public class Organizations implements Serializable{
 	
 	@Id
-	@Column(name="idorg")
+	@Column(name="idorg",updatable=false)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "org_sequence")
     @SequenceGenerator(name = "org_sequence", sequenceName = "org_sequence")
 	private Long idOrganization;

@@ -26,6 +26,7 @@ import com.example.demo.entity.Admins;
 import com.example.demo.entity.Clients;
 import com.example.demo.entity.DeliveryMen;
 import com.example.demo.entity.Managers;
+import com.example.demo.entity.Organizations;
 import com.example.demo.functions.AdminsFunctionsImpl;
 import com.example.demo.functions.ClientsFunctionsImpl;
 import com.example.demo.functions.DeliveryManFunctionsImpl;
@@ -35,6 +36,7 @@ import com.example.demo.repository.AdminsRepository;
 import com.example.demo.repository.ClientsRepository;
 import com.example.demo.repository.DeliveryManRepository;
 import com.example.demo.repository.ManagersRepository;
+import com.example.demo.repository.OrganizationsRepository;
 
 
 
@@ -63,8 +65,8 @@ public class AdminsController {
 	@Autowired 
 	private ManagersRepository managersRepository;
 	
-	//@Autowired
-	//private ManagersFunctionsImpl managersFuncImpl;
+	@Autowired
+	private OrganizationsRepository organizationsRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -72,12 +74,38 @@ public class AdminsController {
 	
 
 	@PostMapping(path="admin/clientslist/create")
-    public ResponseEntity<Clients> createClient(@RequestBody Clients client) {
-        
-		Clients client1 = clientsRepository.save(client);
+    public ResponseEntity<?> createClient(@Valid @RequestBody Clients client , BindingResult result) {
 		
-		return new ResponseEntity<Clients>(client1,HttpStatus.CREATED);
+		if(result.hasErrors()) {
+			
+			Map<String , String> errorMap = new HashMap<>();
+			for(FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+		}
+		
+		if(clientsRepository.existsByPhone(client.getPhone())) {
+			return new ResponseEntity<String>("Phone Already Exists",HttpStatus.BAD_REQUEST);
+		}
+		
+		if(clientsRepository.existsByEmail(client.getEmail())) {
+			return new ResponseEntity<>("Email Already Exists",HttpStatus.BAD_REQUEST);
+		}
+				
+		
+			client.setPasswordClient(bCryptPasswordEncoder.encode(client.getPasswordClient()));	
+			
+			client.setPhone(client.getPhone());
+			
+			Clients client1 = clientsRepository.save(client);					
+			
+			return new ResponseEntity<Clients>(client1,HttpStatus.CREATED);
+			
+
+		
     }
+	
 	
 	
 	@GetMapping(path="admin/clientslist")
@@ -93,12 +121,37 @@ public class AdminsController {
 	
 	
 	@PutMapping(path="admin/clientslist/update/{phone}")
-	public ResponseEntity<Clients> updateClient(@PathVariable Long phone,@RequestBody Clients client){
-		Clients updateClient=clientsRepository.save(client);
-		return new ResponseEntity<Clients>(client,HttpStatus.OK); 
+	public ResponseEntity<?> updateClient(@PathVariable Long phone,@Valid @RequestBody Clients client, BindingResult result){
+		
+       if(result.hasErrors()) {
+			
+			Map<String , String> errorMap = new HashMap<>();
+			for(FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			
+			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+            
+    }
+
+		
+		Clients newClient= clientsRepository.findByPhone(phone);
+		
+    	newClient.setFirstName(client.getFirstName());
+    	newClient.setLastName(client.getLastName());
+    	newClient.setAddressClient(client.getAddressClient());
+    	newClient.setBirthDate(client.getBirthDate());
+	    newClient.setEmail(client.getEmail());
+    	newClient.setInscriptionDate(client.getInscriptionDate());
+    	newClient.setPasswordClient(client.getPasswordClient());
+	
+		 
+		final Clients updatedClient= clientsRepository.save(newClient);
+		return new ResponseEntity<Clients>(updatedClient,HttpStatus.OK); 
 		
 		
 	}
+	
 	
 	
 	@DeleteMapping(path="admin/clientslist/delete/{phone}")
@@ -120,9 +173,31 @@ public class AdminsController {
 	
 	
 	@PostMapping(path="admin/create")
-    public void createAdmin(@RequestBody Admins admin) {
+    public ResponseEntity<?> createAdmin(@Valid @RequestBody Admins admin, BindingResult result) {
+	    if(result.hasErrors()) {
+			
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }
+	    
+	    if(adminsRepository.existsByEmail(admin.getEmail())) {
+	    	return new ResponseEntity<>("Email Already Exists" ,HttpStatus.BAD_REQUEST );
+	    }
         
-		adminsfunctionsimpl.InsertAdmin(admin);
+	    admin.setPasswordAdmin(bCryptPasswordEncoder.encode(admin.getPasswordAdmin()));
+	    
+	    admin.setEmail(admin.getEmail());
+	    
+	    Admins adminNew= adminsRepository.save(admin);	    
+	    return new ResponseEntity<Admins>(adminNew,HttpStatus.CREATED);
+	    
+	    
+	
 				
     }
 	
@@ -158,28 +233,68 @@ public class AdminsController {
 	
 	
 	@PutMapping(path="admin/update/{email}")
-	public ResponseEntity<Admins> updateAdmin(@PathVariable String email,@RequestBody Admins admin){
+	public ResponseEntity<?> updateAdmin(@PathVariable String email,@Valid @RequestBody Admins admin, BindingResult result){
 		
-	Admins updatedAdmin=adminsRepository.save(admin);
-	
-	return new ResponseEntity<Admins>(admin,HttpStatus.OK); 
+       if(result.hasErrors()) {
+			
+			Map<String , String> errorMap = new HashMap<>();
+			for(FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			
+			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+            
+    }
+		
+		Admins newAdmin= adminsRepository.findByEmail(email);		
+		newAdmin.setFirstName(admin.getFirstName());
+		newAdmin.setLastName(admin.getLastName());
+		newAdmin.setAddressAdmin(admin.getAddressAdmin());
+		newAdmin.setBirthDate(admin.getBirthDate());
+		newAdmin.setPhone(admin.getPhone());
+		newAdmin.setInscriptionDate(admin.getInscriptionDate());
+		newAdmin.setPasswordAdmin(admin.getPasswordAdmin());			
+		 
+		final Admins updatedAdmin= adminsRepository.save(newAdmin);
+		return new ResponseEntity<Admins>(updatedAdmin,HttpStatus.OK); 
 		
 		
 	}
 	
+
 	
-	//DeliveryMen Functions	
+	
+	//.....................................DeliveryMen Functions.............................................	
 	
 	@PostMapping(path="admin/deliverymenlist/create")
-    public ResponseEntity<DeliveryMen> createDeliveryMan(@RequestBody DeliveryMen deliveryMan) {
+    public ResponseEntity<?> createDeliveryMan(@Valid @RequestBody DeliveryMen deliveryMan,BindingResult result) {				
         
-		DeliveryMen deliveryman1 = deliverymenRepository.save(deliveryMan);
-		
-		return new ResponseEntity<DeliveryMen>(deliveryman1,HttpStatus.CREATED);
-    }
-	
-	
-	
+	     if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+			}
+				
+			
+			if(deliverymenRepository.existsByEmail(deliveryMan.getEmail())) {
+				return new ResponseEntity<>("Email Already Exists",HttpStatus.BAD_REQUEST);
+			}
+					
+			
+			deliveryMan.setPasswordDeliverMan(bCryptPasswordEncoder.encode(deliveryMan.getPasswordDeliverMan()));	
+				
+			deliveryMan.setPhone(deliveryMan.getPhone());
+				
+			DeliveryMen deliveryMan2 = deliverymenRepository.save(deliveryMan);					
+				
+			return new ResponseEntity<DeliveryMen>(deliveryMan2,HttpStatus.CREATED);
+				
+
+			
+	    }
 	
 	
 	@GetMapping(path="admin/deliverymenlist")
@@ -195,12 +310,38 @@ public class AdminsController {
 	
 	
 	@PutMapping(path="admin/deliverymenlist/update/{email}")
-	public ResponseEntity<DeliveryMen> updateClient(@PathVariable String email,@RequestBody DeliveryMen deliveryMan){
-		DeliveryMen updateClient=deliverymenRepository.save(deliveryMan);
-		return new ResponseEntity<DeliveryMen>(deliveryMan,HttpStatus.OK); 
+	public ResponseEntity<?> updateDeliveryMan(@PathVariable String email,@Valid @RequestBody DeliveryMen deliveryMan, BindingResult result){
 		
+	       if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }
+
+			
+	       DeliveryMen newDeliveryMan= deliverymenRepository.findByEmail(deliveryMan.getEmail());
+			
+	       newDeliveryMan.setAddressDeliveryMan(deliveryMan.getAddressDeliveryMan());
+	       newDeliveryMan.setBirthDate(deliveryMan.getBirthDate());
+	       newDeliveryMan.setEmail(email);
+	       newDeliveryMan.setFirstName(deliveryMan.getFirstName());
+	       newDeliveryMan.setLastName(deliveryMan.getLastName());
+	       newDeliveryMan.setPasswordDeliverMan(deliveryMan.getPasswordDeliverMan());
+	       newDeliveryMan.setPhone(deliveryMan.getPhone());
+	
+			 
+			final DeliveryMen updateDeliveryMan= deliverymenRepository.save(newDeliveryMan);
+			
 		
-	}
+			return new ResponseEntity<DeliveryMen>(updateDeliveryMan,HttpStatus.OK); 
+			
+			
+		}
 	
 	
 	@DeleteMapping(path="admin/deliverymenlist/delete/{email}")
@@ -221,17 +362,33 @@ public class AdminsController {
 	}
 	
 	
-	//Manager Functions
+	//.......................................Managers Functions.......................................
 	
 	
 	@PostMapping(path="admin/managerslist/create")
-    public ResponseEntity<Managers> createManager(@RequestBody Managers manager) {
-        
-		Managers manager1 = managersRepository.save(manager);
+	public ResponseEntity<?> createManagers(@Valid @RequestBody Managers manager, BindingResult result) {
+		 if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }
+		 
+		if(managersRepository.existsByEmail(manager.getEmail())) {
+				return new ResponseEntity<>("Email Already Exists",HttpStatus.BAD_REQUEST);
+		}
+							
+		manager.setPasswordManager(bCryptPasswordEncoder.encode(manager.getPasswordManager()));			
+		managersRepository.save(manager);
 		
-		return new ResponseEntity<Managers>(manager1,HttpStatus.CREATED);
-    }
-	
+		return new ResponseEntity<Managers>(manager,HttpStatus.CREATED);
+		
+       }
+
 	
 	@GetMapping(path="admin/managerslist")
 	public List<Managers> getAllManagers(){
@@ -246,20 +403,44 @@ public class AdminsController {
 	
 	
 	@PutMapping(path="admin/managerslist/update/{email}")
-	public ResponseEntity<Managers> updateManager(@PathVariable String email,@RequestBody Managers manager){
+	public ResponseEntity<?> updateManager(@PathVariable String email,@Valid @RequestBody Managers manager, BindingResult result){
 		
-		Managers updatedManager=managersRepository.save(manager);
+	       if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }
+
+			
+			Managers newManager= managersRepository.findByEmail(manager.getEmail());
+			
+			newManager.setAddressManager(manager.getAddressManager());
+			newManager.setBirthDate(manager.getBirthDate());
+			newManager.setEmail(email);
+			newManager.setFirstName(manager.getFirstName());
+			newManager.setLastName(manager.getLastName());
+			newManager.setPasswordManager(manager.getPasswordManager());
+			newManager.setPhone(manager.getPhone());
+			newManager.setProname(manager.getProname());
+			 
+			final Managers updateManager= managersRepository.save(newManager);
+			
 		
-		return new ResponseEntity<Managers>(manager,HttpStatus.OK); 
-		
-		
-	}
-	/*
+			return new ResponseEntity<Managers>(updateManager,HttpStatus.OK); 
+			
+			
+		}
+	
 	
 	@DeleteMapping(path="admin/managerslist/delete/{email}")
 	public void deleteManager(@PathVariable String email) {
 		
-		Managers managerToBeDeleted = managersFuncImpl.AfficherManager(email).get(0);
+		Managers managerToBeDeleted = managersRepository.findByEmail(email);
 		
 		adminsfunctionsimpl.DeleteManager(managerToBeDeleted);
 		
@@ -269,18 +450,87 @@ public class AdminsController {
 	@GetMapping("admin/managerslist/{email}")
 	public Managers getSpecificManager(@PathVariable String email) {
 		
-		return managersFuncImpl.AfficherManager(email).get(0);
+		return managersRepository.findByEmail(email);
 		
 	}
 	
-	*/
 	
+	//.....................................Organizations functions ...................................
 	
+	@PostMapping("admin/organization/organizationslist/create/{idManager}")
+	public ResponseEntity<?> createOrganization(@Valid @RequestBody Organizations organization, @PathVariable String idManager ,BindingResult result) {
+		 if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }	
+		 
+		 Managers manager= managersRepository.findByEmail(idManager);
+		 if(manager==null) {
+			 return new ResponseEntity<String>("You don't have the privilege",HttpStatus.BAD_REQUEST);
+		 }
+		 
+		organization.setIdManager(manager.getEmail());		
+		organizationsRepository.save(organization);
+		
+		return new ResponseEntity<Organizations>(organization,HttpStatus.CREATED);
+   }
 	
+	@PutMapping("admin/organization/organizationslist/update/{idManager}/{idOrganization}")
+	public ResponseEntity<?> updateOrganization(@Valid @RequestBody Organizations organization, @PathVariable Long idOrganization ,@PathVariable String idManager ,BindingResult result) {
+		 if(result.hasErrors()) {
+				
+				Map<String , String> errorMap = new HashMap<>();
+				for(FieldError error : result.getFieldErrors()) {
+					errorMap.put(error.getField(), error.getDefaultMessage());
+				}
+				
+				return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+	            
+	    }
+		 
+		 Managers manager= managersRepository.findByEmail(idManager);
+		 
+		 if(manager==null) {
+			 return new ResponseEntity<String>("You don't have the privilege",HttpStatus.BAD_REQUEST);
+		 }
+		 
+		 Organizations organization2 = organizationsRepository.findByIdOrganization(idOrganization);
+		 organization2.setIdManager(idManager);
+		 organization2.setDescription(organization.getDescription());
+		 organization2.setLabel(organization.getLabel());
+		  
+		 final Organizations updatedOrganization =  organizationsRepository.save(organization2);
+
+			
+		return new ResponseEntity<Organizations>(updatedOrganization,HttpStatus.OK); 
+
+  }
 	
-	
-	
-	
-	
+	@DeleteMapping(path="admin/organization/organizationslist/delete/{idOrganization}")
+	public void deleteOrganization(@PathVariable Long idOrganization) {
+		
+		Organizations organizationToBeDeleted = organizationsRepository.findByIdOrganization(idOrganization);
+		
+		organizationsRepository.delete(organizationToBeDeleted);
+		
+		
+	}
+
+	@GetMapping(path="admin/organization/organizationslist")
+	public List<Organizations> getAllOrganizations(){
+		
+		List<Organizations> organizationsList = new ArrayList<Organizations>();
+		
+		organizationsRepository.findAll().forEach(organizationsList :: add);
+		
+		return organizationsList;
+		
+	}
 
 }

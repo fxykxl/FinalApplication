@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Clients;
-
+import com.example.demo.entity.Managers;
 import com.example.demo.functions.AdminsFunctionsImpl;
 import com.example.demo.functions.ClientsFunctionsImpl;
 import com.example.demo.payload.LoginRequest;
@@ -114,29 +115,45 @@ public class ClientsController {
     }
 	
 	
+	@PutMapping(path="client/clientslist/update/{phone}")
+	public ResponseEntity<?> updateClient(@PathVariable Long phone,@Valid @RequestBody Clients client, BindingResult result){
+		
+       if(result.hasErrors()) {
+			
+			Map<String , String> errorMap = new HashMap<>();
+			for(FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			
+			return new ResponseEntity<Map<String , String>>(errorMap ,HttpStatus.BAD_REQUEST );
+            
+    }
+
+		
+		Clients newClient= clientsRepository.findByPhone(phone);
+		
+    	newClient.setFirstName(client.getFirstName());
+    	newClient.setLastName(client.getLastName());
+    	newClient.setAddressClient(client.getAddressClient());
+    	newClient.setBirthDate(client.getBirthDate());
+	    newClient.setEmail(client.getEmail());
+    	newClient.setInscriptionDate(client.getInscriptionDate());
+    	newClient.setPasswordClient(client.getPasswordClient());
+	
+		 
+		final Clients updatedClient= clientsRepository.save(newClient);
+		return new ResponseEntity<Clients>(updatedClient,HttpStatus.OK); 
+		
+		
+	}
+	
+	
+	
 	
 	@GetMapping("client/clientslist/{phone}")
 	public Clients getSpecificClient(@PathVariable Long phone) {
 		return clientsFunctionsImpl.AfficherClient(phone).get(0);
 	}
-	
-	
-	
-	
-	
-	@DeleteMapping(path="client/clientslist/delete/{phone}")
-	public void deleteClient(@PathVariable Long phone) {
-		
-		Clients clientToBeDeleted = clientsFunctionsImpl.AfficherClient(phone).get(0);
-		adminsfunctionsimpl.DeleteClient(clientToBeDeleted);
-		
-	}
-	
-	
-	
-	
-	
-	
 	
 	
 	
