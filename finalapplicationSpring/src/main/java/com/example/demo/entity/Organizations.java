@@ -49,6 +49,9 @@ public class Organizations implements Serializable{
 	@Size(min=10, message="Must Be More Than 10 Characters")
 	private String description;
 	
+	@Column(name="picture")
+	private String picture;
+	
 
 
 	
@@ -96,6 +99,18 @@ public class Organizations implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+
+	public String getPicture() {
+		return picture;
+	}
+
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+	
+	
 	
 	
 

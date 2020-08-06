@@ -2,10 +2,16 @@ package com.example.demo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -77,38 +83,16 @@ public class DeliveryMen implements Serializable{
 	private String passwordDeliverMan;
 	
 	
-	public DeliveryMen() {
+	@OneToMany(targetEntity=Orders.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
+    @JoinColumn(name = "iddeliveryman" , referencedColumnName="email")
+	private List<Orders> orders;
+	
 		
+	@PrePersist
+	public void onCreate() {
+		this.inscriptionDate=new Date();
 	}
 	
-    public DeliveryMen(String email) {
-		
-		this.email= email;
-    }
-    
-    
-	public DeliveryMen( String email ,String password, Long phone) {
-		this.passwordDeliverMan =password;
-		this.phone = phone;
-		this.email=email;
-	}
-
-	
-
-	
-	public DeliveryMen(String email, String firstName, String lastName, Date birthDate, String gender, Long phone,
-			String addressDeliveryMan, Date inscriptionDate, String passwordDeliverMan) {
-		super();
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.birthDate = birthDate;
-		this.gender = gender;
-		this.phone = phone;
-		this.addressDeliveryMan = addressDeliveryMan;
-		this.inscriptionDate = inscriptionDate;
-		this.passwordDeliverMan = passwordDeliverMan;
-	}
 
 	public String getEmail() {
 		return email;

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Managers implements Serializable{
 	
 	@Id
-	@Column(name="email")
+	@Column(name="email" , updatable=false)
 	@NotBlank(message="Required Field")
 	@Email(message="Please Enter a valid email")
 	private String email;
@@ -74,7 +74,7 @@ public class Managers implements Serializable{
 	
 	
 	@Min(10) @NotNull(message="Required Field")
-	@Column(name="phone")
+	@Column(name="phone",updatable=false)
 	private Long phone;
 	
 	
@@ -95,6 +95,9 @@ public class Managers implements Serializable{
     @JoinColumn(name = "idmanager" , referencedColumnName="email")
 	private List<Organizations> organizations;
 	
+	@OneToMany(targetEntity=Organizations.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
+    @JoinColumn(name = "idmanager" , referencedColumnName="email")
+	private List<Orders> orders;
 	
 	
 	

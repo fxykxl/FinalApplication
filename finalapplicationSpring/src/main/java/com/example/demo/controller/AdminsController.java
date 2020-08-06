@@ -143,7 +143,7 @@ public class AdminsController {
     	newClient.setBirthDate(client.getBirthDate());
 	    newClient.setEmail(client.getEmail());
     	newClient.setInscriptionDate(client.getInscriptionDate());
-    	newClient.setPasswordClient(client.getPasswordClient());
+    	newClient.setPasswordClient(bCryptPasswordEncoder.encode(client.getPasswordClient()));
 	
 		 
 		final Clients updatedClient= clientsRepository.save(newClient);
@@ -204,7 +204,7 @@ public class AdminsController {
 	
 	
 	
-	@PostMapping("/admin/signin")
+	@PostMapping("admin/signin")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
     if(result.hasErrors()) {
 			
@@ -224,7 +224,7 @@ public class AdminsController {
 			
 			}
 						
-			return new ResponseEntity<>("There have been Errors" ,HttpStatus.BAD_REQUEST );
+			return new ResponseEntity<>("Incorrect Email or Password" ,HttpStatus.BAD_REQUEST );
 			
 			
 			
@@ -253,7 +253,7 @@ public class AdminsController {
 		newAdmin.setBirthDate(admin.getBirthDate());
 		newAdmin.setPhone(admin.getPhone());
 		newAdmin.setInscriptionDate(admin.getInscriptionDate());
-		newAdmin.setPasswordAdmin(admin.getPasswordAdmin());			
+		newAdmin.setPasswordAdmin(bCryptPasswordEncoder.encode(admin.getPasswordAdmin()));			
 		 
 		final Admins updatedAdmin= adminsRepository.save(newAdmin);
 		return new ResponseEntity<Admins>(updatedAdmin,HttpStatus.OK); 
@@ -331,7 +331,7 @@ public class AdminsController {
 	       newDeliveryMan.setEmail(email);
 	       newDeliveryMan.setFirstName(deliveryMan.getFirstName());
 	       newDeliveryMan.setLastName(deliveryMan.getLastName());
-	       newDeliveryMan.setPasswordDeliverMan(deliveryMan.getPasswordDeliverMan());
+	       newDeliveryMan.setPasswordDeliverMan(bCryptPasswordEncoder.encode(deliveryMan.getPasswordDeliverMan()));
 	       newDeliveryMan.setPhone(deliveryMan.getPhone());
 	
 			 
@@ -357,7 +357,7 @@ public class AdminsController {
 	@GetMapping("admin/deliverymenlist/{email}")
 	public DeliveryMen getSpecificDeliveryMan(@PathVariable String email) {
 		
-		return deliveryMenFuncImpl.AfficherDeliveryMan(email).get(0);
+		return deliverymenRepository.findByEmail(email);
 		
 	}
 	
@@ -424,7 +424,7 @@ public class AdminsController {
 			newManager.setEmail(email);
 			newManager.setFirstName(manager.getFirstName());
 			newManager.setLastName(manager.getLastName());
-			newManager.setPasswordManager(manager.getPasswordManager());
+			newManager.setPasswordManager(bCryptPasswordEncoder.encode(manager.getPasswordManager()));
 			newManager.setPhone(manager.getPhone());
 			newManager.setProname(manager.getProname());
 			 
@@ -533,4 +533,16 @@ public class AdminsController {
 		
 	}
 
+	@GetMapping(path="admin/organization/organizationslist/{idOrganization}")
+	public Organizations getSpecificOrganization(@PathVariable Long idOrganization) {
+		return organizationsRepository.findByIdOrganization(idOrganization);
+		
+	}
+	
+	@GetMapping(path="admin/organization/organizationslist/manager/{idManager}")
+	public List<Organizations> getOrganizationsManager(@PathVariable String idManager){
+		
+		return organizationsRepository.findByIdManager(idManager);
+		
+	}
 }

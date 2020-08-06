@@ -1,18 +1,13 @@
 package com.example.demo.entity;
 
-import java.io.Serializable;
+
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -61,10 +56,12 @@ public class Clients implements UserDetails{
 	@Column(name="gender")
 	private String gender;
 	
+	
 	@NotBlank(message="Required Field")
 	@Email(message="Please Enter a valid email")
 	@Column(name="email")
 	private String email;
+	
 	
 	@NotBlank(message="Required Field")
 	@Size(min=10 ,message="Must be more than 10 characters")
@@ -76,15 +73,19 @@ public class Clients implements UserDetails{
 	@Column(name="inscriptiondate" , updatable=false)
 	private Date inscriptionDate;
 	
+	
 	@NotBlank(message="Required Field")
 	@Size(min=8 , message="Must be More Than 8 characters")
 	@Column(name="passwordclient")
 	private String passwordClient;
 	
 	@Transient
+	@JsonIgnore
 	private String confirmPassword;
 	
-	
+	@OneToMany(targetEntity=Orders.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
+    @JoinColumn(name = "idclient" , referencedColumnName="phone")
+	private List<Orders> orders;
 	
 	
 	@PrePersist

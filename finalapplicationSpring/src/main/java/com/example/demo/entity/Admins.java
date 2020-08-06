@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="Admins", uniqueConstraints = { 
@@ -70,14 +72,21 @@ public class Admins implements Serializable {
 	
 	@Column(name="registrationdate",updatable=false)
 	@JsonFormat(pattern="mm-dd-yyyy")
+	@JsonIgnore
 	private Date inscriptionDate;
 	
 	
 	
-	@Column(name="paswordadmin")
+	@Column(name="passwordadmin")
 	@NotBlank(message="Required Field")
 	@Size(min=8 , message="Must be More Than 8 characters")
 	private String passwordAdmin;
+	
+	
+	@PrePersist
+	public void onCreate() {
+		this.inscriptionDate=new Date();
+	}
 	
 	
 	

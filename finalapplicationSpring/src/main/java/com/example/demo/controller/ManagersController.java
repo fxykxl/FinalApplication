@@ -131,7 +131,7 @@ public class ManagersController {
 		newManager.setEmail(email);
 		newManager.setFirstName(manager.getFirstName());
 		newManager.setLastName(manager.getLastName());
-		newManager.setPasswordManager(manager.getPasswordManager());
+		newManager.setPasswordManager(bCryptPasswordEncoder.encode(manager.getPasswordManager()));
 		newManager.setPhone(manager.getPhone());
 		newManager.setProname(manager.getProname());
 		 

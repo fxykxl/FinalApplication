@@ -138,7 +138,7 @@ public class ClientsController {
     	newClient.setBirthDate(client.getBirthDate());
 	    newClient.setEmail(client.getEmail());
     	newClient.setInscriptionDate(client.getInscriptionDate());
-    	newClient.setPasswordClient(client.getPasswordClient());
+    	newClient.setPasswordClient(bCryptPasswordEncoder.encode(client.getPasswordClient()));
 	
 		 
 		final Clients updatedClient= clientsRepository.save(newClient);
