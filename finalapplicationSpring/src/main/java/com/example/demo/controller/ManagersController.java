@@ -67,6 +67,7 @@ public class ManagersController {
 		}
 							
 		manager.setPasswordManager(bCryptPasswordEncoder.encode(manager.getPasswordManager()));			
+		manager.setAccountStatus("Pending for Approval");
 		managersRepo.save(manager);
 		
 		return new ResponseEntity<Managers>(manager,HttpStatus.CREATED);

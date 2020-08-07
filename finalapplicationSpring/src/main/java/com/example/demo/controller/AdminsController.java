@@ -454,6 +454,28 @@ public class AdminsController {
 		
 	}
 	
+	@PutMapping(path="admin/managerslist/approve/{email}")
+	public ResponseEntity<?> approveManagersAccount(@PathVariable String email){
+		    
+	        Managers newManager= managersRepository.findByEmail(email);			
+			newManager.setAccountStatus("Approved");
+			final Managers updateManager= managersRepository.save(newManager);		
+			return new ResponseEntity<Managers>(updateManager,HttpStatus.OK); 
+	       
+	}
+	
+	@GetMapping(path="admin/managerslist/pending")
+	public List<Managers> getAllManagersPendindApproval(){
+		
+		String pending="Pending for Approval";
+		
+        List<Managers> managersList = new ArrayList<Managers>();
+		
+		managersRepository.findAllByAccountStatus(pending).forEach(managersList :: add);
+		
+		return managersList;
+	}
+	
 	
 	//.....................................Organizations functions ...................................
 	

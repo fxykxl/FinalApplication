@@ -44,6 +44,7 @@ public class Organizations implements Serializable{
 	@Size(min=10, message="Must Be More Than 10 Characters")
 	private String addressOrganization;
 	
+	
 	@Column(name="description")
 	@NotBlank(message="Required Field")
 	@Size(min=10, message="Must Be More Than 10 Characters")

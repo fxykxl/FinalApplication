@@ -90,12 +90,16 @@ public class Managers implements Serializable{
 	@Size(min=8 , message="Must be More Than 8 characters")
 	private String passwordManager;
 	
+	
+	@Column(name="accountstatus")
+	private String accountStatus;
+	
 
 	@OneToMany(targetEntity=Organizations.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
     @JoinColumn(name = "idmanager" , referencedColumnName="email")
 	private List<Organizations> organizations;
 	
-	@OneToMany(targetEntity=Organizations.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
+	@OneToMany(targetEntity=Orders.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
     @JoinColumn(name = "idmanager" , referencedColumnName="email")
 	private List<Orders> orders;
 	
@@ -201,6 +205,26 @@ public class Managers implements Serializable{
 
 	public void setPasswordManager(String passwordManager) {
 		this.passwordManager = passwordManager;
+	}
+
+
+	public String getAccountStatus() {
+		return accountStatus;
+	}
+
+
+	public void setAccountStatus(String accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+
+
+	public List<Orders> getOrders() {
+		return orders;
+	}
+
+
+	public void setOrders(List<Orders> orders) {
+		this.orders = orders;
 	}
 	
 	
