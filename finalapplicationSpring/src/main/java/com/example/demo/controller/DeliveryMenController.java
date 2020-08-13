@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -21,10 +21,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.Clients;
+
 import com.example.demo.entity.DeliveryMen;
-import com.example.demo.entity.Managers;
-import com.example.demo.functions.DeliveryManFunctionsImpl;
+
 import com.example.demo.payload.LoginRequest;
 import com.example.demo.repository.DeliveryManRepository;
 
@@ -38,8 +37,7 @@ public class DeliveryMenController {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	@Autowired
-	private DeliveryManFunctionsImpl deliveryMenFuncImpl;
+	
 	
 	
 	@PostMapping("/deliveryman/signin")
@@ -103,7 +101,7 @@ public class DeliveryMenController {
 	@GetMapping("deliveryman/deliverymenlist/{email}")
 	public DeliveryMen getSpecificDeliveryMan(@PathVariable String email) {
 		
-		return deliveryMenFuncImpl.AfficherDeliveryMan(email).get(0);
+		return deliverymanRepo.findByEmail(email);
 		
 	}
 	

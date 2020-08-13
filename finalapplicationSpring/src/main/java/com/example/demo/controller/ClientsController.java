@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Clients;
-import com.example.demo.entity.Managers;
-import com.example.demo.functions.AdminsFunctionsImpl;
-import com.example.demo.functions.ClientsFunctionsImpl;
-import com.example.demo.payload.LoginRequest;
+
+import com.example.demo.payload.LoginRequestClient;
 import com.example.demo.repository.ClientsRepository;
 
 
@@ -36,15 +34,11 @@ import com.example.demo.repository.ClientsRepository;
 public class ClientsController {
 	
 	
-	@Autowired
-	private ClientsFunctionsImpl clientsFunctionsImpl;
-	
 
 	@Autowired
 	private ClientsRepository clientsRepository;
 	
-	@Autowired
-	private AdminsFunctionsImpl adminsfunctionsimpl;
+	
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -53,7 +47,7 @@ public class ClientsController {
 
 	
 	@PostMapping("/client/signin")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestClient loginRequestClient, BindingResult result){
     if(result.hasErrors()) {
 			
 			Map<String , String> errorMap = new HashMap<>();
@@ -65,8 +59,8 @@ public class ClientsController {
             
     }
 			
-			Clients client= clientsRepository.findByEmail(loginRequest.getEmail());			
-			if(bCryptPasswordEncoder.matches(loginRequest.getPassword() ,client.getPasswordClient())) {
+			Clients client= clientsRepository.findByPhone(loginRequestClient.getPhone());			
+			if(bCryptPasswordEncoder.matches(loginRequestClient.getPassword() ,client.getPasswordClient())) {
 				
 				return ResponseEntity.ok("Logged in Successfully");
 			
@@ -152,7 +146,7 @@ public class ClientsController {
 	
 	@GetMapping("client/clientslist/{phone}")
 	public Clients getSpecificClient(@PathVariable Long phone) {
-		return clientsFunctionsImpl.AfficherClient(phone).get(0);
+		return clientsRepository.findByPhone(phone);
 	}
 	
 	

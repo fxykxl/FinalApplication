@@ -46,7 +46,7 @@ public class OrdersController {
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
-	@PostMapping("orders/create/{idManager}/{idClient}/{idDeliveryMan}")
+	@PostMapping("orders/create/{idManager}/{idDeliveryMan}/{idClient}")
 	public ResponseEntity<?> createOrder(@Valid @RequestBody Orders order ,@PathVariable String idManager 
 			,@PathVariable Long idClient, @PathVariable String idDeliveryMan ){
 		

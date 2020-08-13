@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.Clients;
+
 import com.example.demo.entity.Managers;
-import com.example.demo.entity.Organizations;
-import com.example.demo.functions.ManagersFunctionsImpl;
+
+
 import com.example.demo.payload.LoginRequest;
 import com.example.demo.repository.ManagersRepository;
-import com.example.demo.repository.OrganizationsRepository;
+
 
 
 
@@ -42,8 +42,7 @@ public class ManagersController {
 	@Autowired
 	private ManagersRepository managersRepo;
 	
-	@Autowired
-	private OrganizationsRepository organizationRepo;
+	
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;

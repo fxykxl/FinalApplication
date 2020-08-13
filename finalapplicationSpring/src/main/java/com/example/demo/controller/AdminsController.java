@@ -27,10 +27,9 @@ import com.example.demo.entity.Clients;
 import com.example.demo.entity.DeliveryMen;
 import com.example.demo.entity.Managers;
 import com.example.demo.entity.Organizations;
-import com.example.demo.functions.AdminsFunctionsImpl;
-import com.example.demo.functions.ClientsFunctionsImpl;
-import com.example.demo.functions.DeliveryManFunctionsImpl;
-import com.example.demo.functions.ManagersFunctionsImpl;
+
+
+
 import com.example.demo.payload.LoginRequest;
 import com.example.demo.repository.AdminsRepository;
 import com.example.demo.repository.ClientsRepository;
@@ -44,14 +43,12 @@ import com.example.demo.repository.OrganizationsRepository;
 @RestController
 public class AdminsController {
 	
-	@Autowired
-	private ClientsFunctionsImpl clientsFunctionsImpl;
+	
 	
 	@Autowired
 	private ClientsRepository clientsRepository;
 	
-	@Autowired
-	private AdminsFunctionsImpl adminsfunctionsimpl;
+	
 	
 	@Autowired
 	private AdminsRepository adminsRepository;
@@ -59,8 +56,7 @@ public class AdminsController {
 	@Autowired
 	private DeliveryManRepository deliverymenRepository;
 	
-	@Autowired
-	private DeliveryManFunctionsImpl deliveryMenFuncImpl;
+
 	
 	@Autowired 
 	private ManagersRepository managersRepository;
@@ -157,15 +153,15 @@ public class AdminsController {
 	@DeleteMapping(path="admin/clientslist/delete/{phone}")
 	public void deleteClient(@PathVariable Long phone) {
 		
-		Clients clientToBeDeleted = clientsFunctionsImpl.AfficherClient(phone).get(0);
-		adminsfunctionsimpl.DeleteClient(clientToBeDeleted);
+		Clients clientToBeDeleted = clientsRepository.findByPhone(phone);
+		clientsRepository.delete(clientToBeDeleted);
 		
 	}
 	
 	
 	@GetMapping("admin/clientslist/{phone}")
 	public Clients getSpecificClient(@PathVariable Long phone) {
-		return clientsFunctionsImpl.AfficherClient(phone).get(0);
+		return clientsRepository.findByPhone(phone);
 	}
 	
 	
@@ -347,9 +343,9 @@ public class AdminsController {
 	@DeleteMapping(path="admin/deliverymenlist/delete/{email}")
 	public void deleteDeleveryMan(@PathVariable String email) {
 		
-		DeliveryMen deliveryManToBeDeleted = deliveryMenFuncImpl.AfficherDeliveryMan(email).get(0);
+		DeliveryMen deliveryManToBeDeleted = deliverymenRepository.findByEmail(email);
 		
-		adminsfunctionsimpl.DeleteDeliveryMan(deliveryManToBeDeleted);
+		deliverymenRepository.delete(deliveryManToBeDeleted);
 		
 	}
 	
@@ -442,7 +438,7 @@ public class AdminsController {
 		
 		Managers managerToBeDeleted = managersRepository.findByEmail(email);
 		
-		adminsfunctionsimpl.DeleteManager(managerToBeDeleted);
+		managersRepository.delete(managerToBeDeleted);
 		
 	}
 	
