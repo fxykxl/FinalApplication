@@ -59,7 +59,8 @@ public class ClientsController {
             
     }
 			
-			Clients client= clientsRepository.findByPhone(loginRequestClient.getPhone());			
+			Clients client= clientsRepository.findByPhone(loginRequestClient.getPhone());		
+			
 			if(bCryptPasswordEncoder.matches(loginRequestClient.getPassword() ,client.getPasswordClient())) {
 				
 				return ResponseEntity.ok("Logged in Successfully");
@@ -94,7 +95,8 @@ public class ClientsController {
 		if(clientsRepository.existsByEmail(client.getEmail())) {
 			return new ResponseEntity<>("Email Already Exists",HttpStatus.BAD_REQUEST);
 		}
-				
+		
+		
 		
 			client.setPasswordClient(bCryptPasswordEncoder.encode(client.getPasswordClient()));	
 			
