@@ -53,10 +53,6 @@ public class Clients implements UserDetails{
 	
 	
 	
-	@Column(name="gender")
-	private String gender;
-	
-	
 	@NotBlank(message="Required Field")
 	@Email(message="Please Enter a valid email")
 	@Column(name="email")
@@ -78,6 +74,9 @@ public class Clients implements UserDetails{
 	@Size(min=8 , message="Must be More Than 8 characters")
 	@Column(name="passwordclient")
 	private String passwordClient;
+	
+	@Column(name="isloggedin")
+	private String isLoggedIn;
 	
 	@Transient
 	@JsonIgnore
@@ -134,12 +133,7 @@ public class Clients implements UserDetails{
 	}
 	
 	
-	public String getGender() {
-		return gender;
-	}
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+
 	
 	
 	public String getEmail() {
@@ -171,6 +165,17 @@ public class Clients implements UserDetails{
 	}
 	public void setPasswordClient(String passwordClient) {
 		this.passwordClient = passwordClient;
+	}
+
+	
+
+	public String getIsLoggedIn() {
+		return isLoggedIn;
+	}
+
+
+	public void setIsLoggedIn(String isLoggedIn) {
+		this.isLoggedIn = isLoggedIn;
 	}
 
 

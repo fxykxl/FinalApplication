@@ -39,7 +39,6 @@ public class DeliveryMenController {
 	
 	
 	
-	
 	@PostMapping("/deliveryman/signin")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
     if(result.hasErrors()) {
@@ -87,6 +86,7 @@ public class DeliveryMenController {
 		deliveryMan.setPasswordDeliverMan(bCryptPasswordEncoder.encode(deliveryMan.getPasswordDeliverMan()));	
 			
 		deliveryMan.setPhone(deliveryMan.getPhone());
+		deliveryMan.setAccountStatus("Pending for Approval");
 			
 		DeliveryMen deliveryMan2 = deliverymanRepo.save(deliveryMan);					
 			
@@ -141,6 +141,7 @@ public class DeliveryMenController {
 			
 			
 		}
-	}
+	
 
+}
 

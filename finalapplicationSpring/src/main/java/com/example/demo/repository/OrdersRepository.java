@@ -20,6 +20,7 @@ public interface OrdersRepository extends JpaRepository<Orders , Long>{
 	
 	List<Orders> findByIdDeliveryMan(String idDeliveryMan);
 	
+	List<Orders> findAllByOrderStatus(String status);
 	
 	
 	

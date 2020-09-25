@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Admins;
@@ -357,6 +358,30 @@ public class AdminsController {
 		
 	}
 	
+	@GetMapping(path="admin/deliverymenlist/pending")
+	public List<DeliveryMen> getDeliveryMenPendingForApproval(){
+		
+		String pending="Pending for Approval";
+		
+        List<DeliveryMen> deliverymenlist = new ArrayList<DeliveryMen>();
+		
+        deliverymenRepository.findAllByAccountStatus(pending).forEach(deliverymenlist :: add);
+		
+		return deliverymenlist;
+	}
+	
+	
+	
+	@PutMapping(path="admin/deliverymenlist/approve/{email}")
+	public ResponseEntity<?> approveDeliveryManAccount(@PathVariable String email){
+		    
+		DeliveryMen newDeliveryMan= deliverymenRepository.findByEmail(email);			
+		newDeliveryMan.setAccountStatus("Approved");
+			final DeliveryMen updateManager= deliverymenRepository.save(newDeliveryMan);		
+			return new ResponseEntity<DeliveryMen>(updateManager,HttpStatus.OK); 
+	       
+	}
+	
 	
 	//.......................................Managers Functions.......................................
 	
@@ -476,7 +501,7 @@ public class AdminsController {
 	//.....................................Organizations functions ...................................
 	
 	@PostMapping("admin/organization/organizationslist/create/{idManager}")
-	public ResponseEntity<?> createOrganization(@Valid @RequestBody Organizations organization, @PathVariable String idManager ,BindingResult result) {
+	public ResponseEntity<?> createOrganization(@Valid @RequestBody Organizations organization,@PathVariable String idManager ,BindingResult result) {
 		 if(result.hasErrors()) {
 				
 				Map<String , String> errorMap = new HashMap<>();

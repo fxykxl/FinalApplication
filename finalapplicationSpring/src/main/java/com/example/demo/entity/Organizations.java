@@ -13,15 +13,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import com.example.demo.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
 @Table(name="Organizations")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idOrganization")
 public class Organizations implements Serializable{
 	
 	@Id
@@ -50,8 +57,11 @@ public class Organizations implements Serializable{
 	@Size(min=10, message="Must Be More Than 10 Characters")
 	private String description;
 	
-	@Column(name="picture")
-	private String picture;
+	
+	
+	@OneToMany(targetEntity=Menu.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
+    @JoinColumn(name = "idorganization")
+	private List<Menu> menus;
 	
 
 
@@ -102,13 +112,16 @@ public class Organizations implements Serializable{
 	}
 
 
-	public String getPicture() {
-		return picture;
+	
+
+
+	public List<Menu> getMenus() {
+		return menus;
 	}
 
 
-	public void setPicture(String picture) {
-		this.picture = picture;
+	public void setMenus(List<Menu> menus) {
+		this.menus = menus;
 	}
 	
 	

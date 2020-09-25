@@ -1,8 +1,9 @@
 package com.example.demo.controller;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -22,11 +23,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.example.demo.entity.DeliveryMen;
 import com.example.demo.entity.Managers;
 
 
 import com.example.demo.payload.LoginRequest;
+import com.example.demo.repository.DeliveryManRepository;
 import com.example.demo.repository.ManagersRepository;
 
 
@@ -41,6 +43,9 @@ public class ManagersController {
 	
 	@Autowired
 	private ManagersRepository managersRepo;
+	
+	@Autowired
+	private DeliveryManRepository dmanRepo;
 	
 	
 	
@@ -89,7 +94,7 @@ public class ManagersController {
     }
 			
 			Managers manager= managersRepo.findByEmail(loginRequest.getEmail());			
-			if(bCryptPasswordEncoder.matches(loginRequest.getPassword() ,manager.getPasswordManager())) {
+			if(bCryptPasswordEncoder.matches(loginRequest.getPassword() ,manager.getPasswordManager()))  {
 				
 				return ResponseEntity.ok("Logged in Successfully");
 			
@@ -152,8 +157,26 @@ public class ManagersController {
 	}
 	
 	
+	
+	@GetMapping(path="manager/managerslist/name/{email}")
+	public String getManagersName(@PathVariable String email) {
+		Managers manager = managersRepo.findByEmail(email);	
+		 return manager.getFirstName() + " " +manager.getLastName();
+	}
 
 	
+	@GetMapping(path="manager/deliverymenlist/available")
+	public List<DeliveryMen> getAllDeliveryMen(){
+		
+		final String status = "Available for Work" ;
+		
+		List<DeliveryMen> deliveryMenList = new ArrayList<DeliveryMen>();
+		
+		dmanRepo.findAllByOrderStatus(status).forEach(deliveryMenList :: add);
+		
+		return deliveryMenList;
+		
+	}
 	
 	
 }

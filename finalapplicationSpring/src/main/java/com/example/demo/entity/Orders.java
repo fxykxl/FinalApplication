@@ -2,7 +2,9 @@ package com.example.demo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,22 +14,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
 @Table(name="Orders")
-public class Orders implements Serializable{
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idOrder")
+public class Orders implements Serializable {
 	
 	@Id
 	@Column(name="idorder")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "orders_sequence")
-    @SequenceGenerator(name = "orders_sequence", sequenceName = "orders_sequence")
+    @SequenceGenerator(name = "orders_sequence")
 	private Long idOrder;
 	
 	
@@ -48,11 +57,23 @@ public class Orders implements Serializable{
 	
 	
 	@Column(name="totalprice")
-	private Long totalPrice;
+	private double totalPrice;
 	
+	@Column(name="status")
+	private String orderStatus;
 	
+	@ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                CascadeType.PERSIST,
+                CascadeType.MERGE
+            })
+    @JoinTable(
+        name = "orders_products", 
+        joinColumns = { @JoinColumn(name = "idorder") }, 
+        inverseJoinColumns = { @JoinColumn(name = "idproduct") }
+    )
+	private Set<Products> products_orders = new HashSet<>() ;
 	
-
 	
 	
 	
@@ -67,17 +88,19 @@ public class Orders implements Serializable{
 	}
 	
 	
-	public Orders(Long idOrder, Long idClient, String idManager, String idDeliveryMan, Date dateOrder,
-			Long totalPrice) {
 
+
+	public Orders(Long idOrder, Long idClient, String idManager, String idDeliveryMan, Date dateOrder,
+			double totalPrice, String orderStatus) {
+		super();
 		this.idOrder = idOrder;
 		this.idClient = idClient;
 		this.idManager = idManager;
 		this.idDeliveryMan = idDeliveryMan;
 		this.dateOrder = dateOrder;
 		this.totalPrice = totalPrice;
+		this.orderStatus = orderStatus;
 	}
-
 
 
 	public Long getIdOrder() {
@@ -140,15 +163,39 @@ public class Orders implements Serializable{
 
 
 
-	public Long getTotalPrice() {
+	public double getTotalPrice() {
 		return totalPrice;
 	}
 
 
 
-	public void setTotalPrice(Long totalPrice) {
+	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+
+	
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+
+	public Set<Products> getProducts_orders() {
+		return products_orders;
+	}
+
+
+	public void setProducts_orders(Set<Products> products_orders) {
+		this.products_orders = products_orders;
+	}
+
+
+	
 
 	
 	

@@ -24,13 +24,18 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
 @Table(name="Managers", uniqueConstraints = { 
 		@UniqueConstraint(columnNames = "email") 
 	})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "email")
 public class Managers implements Serializable{
 	
 	@Id
@@ -57,13 +62,11 @@ public class Managers implements Serializable{
 	private String proname;
 	
 	@Column(name="birthdate")
-	@JsonFormat(pattern="mm-dd-yyyy")
+	@JsonFormat(pattern="yyyy-mm-dd")
 	private Date birthDate;
 	
 	
 	
-	@Column(name="gender")
-	private String gender;
 	
 	
 	
@@ -80,7 +83,7 @@ public class Managers implements Serializable{
 	
 	
 	@Column(name="registrationdate")
-	@JsonFormat(pattern="mm-dd-yyyy")
+	@JsonFormat(pattern="yyyy-mm-dd")
 	private Date inscriptionDate;
 	
 	
@@ -167,13 +170,6 @@ public class Managers implements Serializable{
 		this.birthDate = birthDate;
 	}
 
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
 
 	public String getAddressManager() {
 		return addressManager;

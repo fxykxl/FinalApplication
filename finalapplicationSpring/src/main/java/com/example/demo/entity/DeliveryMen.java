@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name="Deliveryman")
+@Table(name="Deliverymen")
 public class DeliveryMen implements Serializable{
 	
 	@Id
@@ -52,10 +52,7 @@ public class DeliveryMen implements Serializable{
 	private Date birthDate;
 	
 	
-	
-	@Column(name="gender")
-	private String gender;
-	
+
 	
 	
 	@Column(name="phone")
@@ -82,12 +79,19 @@ public class DeliveryMen implements Serializable{
 	@Size(min=8 , message="Must be More Than 8 characters")
 	private String passwordDeliverMan;
 	
+	@Column(name="accountstatus")
+	private String accountStatus;
+	
+	@Column(name="orderstatus")
+	private String orderStatus;
+	
 	
 	@OneToMany(targetEntity=Orders.class ,cascade=CascadeType.ALL ,fetch= FetchType.LAZY)
     @JoinColumn(name = "iddeliveryman" , referencedColumnName="email")
 	private List<Orders> orders;
 	
 		
+
 	@PrePersist
 	public void onCreate() {
 		this.inscriptionDate=new Date();
@@ -126,13 +130,7 @@ public class DeliveryMen implements Serializable{
 		this.birthDate = birthDate;
 	}
 
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+	
 
 	public String getAddressDeliveryMan() {
 		return addressDeliveryMan;
@@ -166,6 +164,27 @@ public class DeliveryMen implements Serializable{
 	public void setPasswordDeliverMan(String passwordDeliverMan) {
 		this.passwordDeliverMan = passwordDeliverMan;
 	}
+
+
+	public String getAccountStatus() {
+		return accountStatus;
+	}
+
+
+	public void setAccountStatus(String accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+	
 	
 	
 	

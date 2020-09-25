@@ -63,6 +63,8 @@ public class ClientsController {
 			
 			if(bCryptPasswordEncoder.matches(loginRequestClient.getPassword() ,client.getPasswordClient())) {
 				
+				client.setIsLoggedIn("True");
+				
 				return ResponseEntity.ok("Logged in Successfully");
 			
 			}
